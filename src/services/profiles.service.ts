@@ -39,4 +39,19 @@ export const profileService = {
       });
     }
   },
+
+  // Delete profile with all stuff
+  clear: async (id: string): Promise<void> => {
+    await db.transaction(
+      "rw",
+      db.profile,
+      db.expenses,
+      db.accounts,
+      async () => {
+        await db.expenses.clear();
+        await db.accounts.clear();
+        await db.profile.delete(id);
+      },
+    );
+  },
 };

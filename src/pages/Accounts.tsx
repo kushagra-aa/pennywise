@@ -1,8 +1,9 @@
 import { type Component, Show, For, createSignal } from "solid-js";
 import { useAccounts } from "~/hooks/useAccounts";
-import { Plus, CreditCard, Trash2, Edit, PiggyBank } from "lucide-solid";
+import { Plus, CreditCard, Trash2, Pencil, PiggyBank } from "lucide-solid";
 import type { AccountType } from "~/types";
 import AccountForm from "~/components/forms/AccountForm";
+import { useProfile } from "~/hooks/useProfiles";
 
 export const AcountTypes = [
   { value: "credit_card", label: "Credit Card" },
@@ -18,6 +19,11 @@ const Accounts: Component = () => {
     update,
     delete: deleteAccount,
   } = useAccounts();
+  const { profile } = useProfile();
+
+  const userProfile = profile();
+  const currency = userProfile?.currency || "₹";
+
   const [isAddingAccount, setIsAddingAccount] = createSignal(false);
   const [editingAccount, setEditingAccount] = createSignal<AccountType | null>(
     null,
@@ -105,7 +111,8 @@ const Accounts: Component = () => {
                   <div class="flex justify-between text-sm">
                     <span class="text-gray-600">Credit Limit:</span>
                     <span class="font-medium">
-                      ${account.creditLimit?.toFixed(2)}
+                      {currency}
+                      {account.creditLimit?.toFixed(2)}
                     </span>
                   </div>
                 </Show>
@@ -114,7 +121,8 @@ const Accounts: Component = () => {
                   <div class="flex justify-between text-sm">
                     <span class="text-gray-600">Balance:</span>
                     <span class="font-medium">
-                      ${account.balance?.toFixed(2)}
+                      {currency}
+                      {account.balance?.toFixed(2)}
                     </span>
                   </div>
                 </Show>
@@ -137,7 +145,7 @@ const Accounts: Component = () => {
                   onClick={() => setEditingAccount(account)}
                   class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm"
                 >
-                  <Edit size={16} style={{ transform: "translateY(1px)" }} />
+                  <Pencil size={16} style={{ transform: "translateY(1px)" }} />
                   Edit
                 </button>
                 <button
