@@ -5,85 +5,70 @@ import type { ExpenseType } from "~/types";
 
 const checkString = (val?: string) => !!(val && val.trim().length > 0);
 
-export const useExpenses = () => {
-  const [trigger, setTrigger] = createSignal(0);
-  const [category, setCategory] = createSignal("");
-  const [accountID, setAccountID] = createSignal("");
-  const [dateRange, setDateRange] = createSignal({ start: "", end: "" });
-
-  const [expenses, { refetch }] = createResource(trigger, async () => {
-    try {
-      if (
-        checkString(category()) &&
-        checkString(accountID()) &&
-        (checkString(dateRange().end) || checkString(dateRange().start))
-      ) {
-        return await expenseService.getByCategoryAndAccountAndDateRange(
-          category(),
-          accountID(),
-          new Date(dateRange().start),
-          new Date(dateRange().end),
-        );
-      }
-      if (checkString(dateRange().end) || checkString(dateRange().start)) {
-        return await expenseService.getByDateRange(
-          new Date(dateRange().start),
-          new Date(dateRange().end),
-        );
-      }
-      if (checkString(category()) && checkString(accountID())) {
-        return await expenseService.getByCategoryAndAccount(
-          category(),
-          accountID(),
-        );
-      }
-      if (checkString(category())) {
-        return await expenseService.getByCategory(category());
-      }
-      if (checkString(accountID())) {
-        return await expenseService.getByAccount(accountID());
-      }
-      return await expenseService.getAll();
-    } catch (error) {
-      toast.error("Failed to load expenses");
-      console.error(error);
-      return [];
+const fetchExpenses = async (filters: {
+  category: string;
+  accountID: string;
+  dateRange: { start: string; end: string };
+}) => {
+  const { category, accountID, dateRange } = filters;
+  try {
+    if (
+      checkString(category) &&
+      checkString(accountID) &&
+      (checkString(dateRange.start) || checkString(dateRange.end))
+    ) {
+      return await expenseService.getByCategoryAndAccountAndDateRange(
+        category,
+        accountID,
+        new Date(dateRange.start),
+        new Date(dateRange.end),
+      );
     }
+    if (checkString(dateRange.start) || checkString(dateRange.end)) {
+      return await expenseService.getByDateRange(
+        new Date(dateRange.start),
+        new Date(dateRange.end),
+      );
+    }
+    if (checkString(category) && checkString(accountID)) {
+      return await expenseService.getByCategoryAndAccount(category, accountID);
+    }
+    if (checkString(category)) {
+      return await expenseService.getByCategory(category);
+    }
+    if (checkString(accountID)) {
+      return await expenseService.getByAccount(accountID);
+    }
+    return await expenseService.getAll();
+  } catch (err) {
+    toast.error("Failed to load expenses");
+    console.error(err);
+    return [];
+  }
+};
+
+export const useExpenses = () => {
+  const [filters, setFilters] = createSignal({
+    category: "",
+    accountID: "",
+    dateRange: { start: "", end: "" },
   });
 
-  const refresh = () => setTrigger((prev) => prev + 1);
+  const [expenses, { refetch }] = createResource(filters, fetchExpenses);
 
-  const filter = (category?: string, accountID?: string) => {
-    if (
-      category &&
-      checkString(category) &&
-      accountID &&
-      checkString(accountID)
-    ) {
-      setCategory(category);
-      setAccountID(accountID);
-    } else if (category && checkString(category)) {
-      setCategory(category);
-      setAccountID("");
-    } else if (accountID && checkString(accountID)) {
-      setCategory("");
-      setAccountID(accountID);
-    }
-    refresh();
+  const filter = (cat?: string, acc?: string) => {
+    setFilters((p) => ({ ...p, category: cat ?? "", accountID: acc ?? "" }));
   };
 
   const filterByDateRange = (start: string, end: string) => {
-    if (checkString(start) && checkString(end)) {
-      setDateRange({ start, end });
-    }
-    refresh();
+    setFilters((p) => ({ ...p, dateRange: { start, end } }));
   };
 
   const create = async (data: Omit<ExpenseType, "id" | "createdAt">) => {
     try {
       await expenseService.create(data);
       toast.success("Expense created successfully");
-      refresh();
+      refetch();
     } catch (error) {
       toast.error("Failed to create expense");
       throw error;
@@ -94,7 +79,7 @@ export const useExpenses = () => {
     try {
       await expenseService.update(id, data);
       toast.success("Expense updated successfully");
-      refresh();
+      refetch();
     } catch (error) {
       toast.error("Failed to update expense");
       throw error;
@@ -105,7 +90,7 @@ export const useExpenses = () => {
     try {
       await expenseService.delete(id);
       toast.success("Expense deleted");
-      refresh();
+      refetch();
     } catch (error) {
       toast.error("Failed to delete expense");
       throw error;
@@ -116,11 +101,11 @@ export const useExpenses = () => {
     expenses,
     loading: () => !!expenses.loading,
     error: () => expenses.error,
-    refresh,
+    refresh: refetch,
     create,
     update,
     filter,
-    filters: { category, accountID, dateRange },
+    filters,
     filterByDateRange,
     delete: deleteExpense,
   };

@@ -111,6 +111,11 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
                 )}
               </For>
             </select>
+            <Show when={field().state.meta.errors.length > 0}>
+              <p class="text-red-500 text-sm mt-1">
+                {field().state.meta.errors[0]?.message}
+              </p>
+            </Show>
           </div>
         )}
       </form.Field>
@@ -129,6 +134,9 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
               onChange={(e) => field().handleChange(e.target.value)}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
+              <option value="" disabled selected hidden>
+                Select Account
+              </option>
               <For each={accounts()}>
                 {(account: AccountType) => (
                   <option value={account.id}>
@@ -137,6 +145,11 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
                 )}
               </For>
             </select>
+            <Show when={field().state.meta.errors.length > 0}>
+              <p class="text-red-500 text-sm mt-1">
+                {field().state.meta.errors[0]?.message}
+              </p>
+            </Show>
           </div>
         )}
       </form.Field>
