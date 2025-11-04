@@ -1,10 +1,10 @@
 import Dexie, { type Table } from "dexie";
-import type { Profile, Account, Expense } from "~/types";
+import type { AccountType, ExpenseType, ProfileType } from "~/types";
 
 export class ExpenseTrackerDB extends Dexie {
-  profile!: Table<Profile, string>;
-  accounts!: Table<Account, string>;
-  expenses!: Table<Expense, string>;
+  profile!: Table<ProfileType, string>;
+  accounts!: Table<AccountType, string>;
+  expenses!: Table<ExpenseType, string>;
 
   constructor() {
     super("ExpenseTrackerDB");

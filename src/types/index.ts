@@ -1,4 +1,4 @@
-export interface Profile {
+export interface ProfileType {
   id: string;
   monthlyIncome: number;
   currency: string;
@@ -6,18 +6,18 @@ export interface Profile {
   updatedAt: Date;
 }
 
-export interface Account {
+export interface AccountType {
   id: string;
   name: string;
   type: "credit_card" | "debit_card" | "bank_account";
-  balance?: number;
-  creditLimit?: number;
-  billingCycleStart?: number; // Day of month (1-31)
-  billingCycleEnd?: number; // Day of month (1-31)
+  balance?: number; // Null If CreditCard
+  creditLimit?: number; // Null If Not CreditCard
+  billingCycleStart?: number; // Day of month (1-31) // Null If Not CreditCard
+  billingCycleEnd?: number; // Day of month (1-31) // Null If Not CreditCard
   createdAt: Date;
 }
 
-export interface Expense {
+export interface ExpenseType {
   id: string;
   accountId: string;
   amount: number;
@@ -27,10 +27,10 @@ export interface Expense {
   createdAt: Date;
 }
 
-export interface ExportData {
+export interface ExportDataType {
   version: string;
   exportDate: string;
-  profile: Profile | null;
-  accounts: Account[];
-  expenses: Expense[];
+  profile: ProfileType | null;
+  accounts: AccountType[];
+  expenses: ExpenseType[];
 }
