@@ -1,12 +1,10 @@
-import { createResource, createSignal } from "solid-js";
-import { profileService } from "~/services/profiles.service";
+import { createResource } from "solid-js";
 import { toast } from "~/components/ui/Toast";
+import { profileService } from "~/services/profiles.service";
 import type { ProfileType } from "~/types";
 
 export const useProfile = () => {
-  const [trigger, setTrigger] = createSignal(0);
-
-  const [profile, { refetch }] = createResource(trigger, async () => {
+  const [profile, { refetch }] = createResource(async () => {
     try {
       return await profileService.get();
     } catch (error) {
@@ -16,7 +14,7 @@ export const useProfile = () => {
     }
   });
 
-  const refresh = () => setTrigger((prev) => prev + 1);
+  const refresh = () => refetch();
 
   const save = async (
     data: Omit<ProfileType, "id" | "createdAt" | "updatedAt">,

@@ -1,12 +1,10 @@
-import { createResource, createSignal } from "solid-js";
-import { accountService } from "~/services/accounts.service";
+import { createResource } from "solid-js";
 import { toast } from "~/components/ui/Toast";
+import { accountService } from "~/services/accounts.service";
 import type { AccountType } from "~/types";
 
 export const useAccounts = () => {
-  const [trigger, setTrigger] = createSignal(0);
-
-  const [accounts, { refetch }] = createResource(trigger, async () => {
+  const [accounts, { refetch }] = createResource(async () => {
     try {
       return await accountService.getAll();
     } catch (error) {
@@ -16,7 +14,7 @@ export const useAccounts = () => {
     }
   });
 
-  const refresh = () => setTrigger((prev) => prev + 1);
+  const refresh = () => refetch();
 
   const create = async (data: Omit<AccountType, "id" | "createdAt">) => {
     try {

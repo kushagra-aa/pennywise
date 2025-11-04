@@ -1,18 +1,11 @@
-import { type Component, Show, For, createSignal } from "solid-js";
-import { useExpenses } from "~/hooks/useExpenses";
-import {
-  Plus,
-  CreditCard,
-  Trash2,
-  Pencil,
-  LucideCircleDollarSign,
-} from "lucide-solid";
-import type { ExpenseType } from "~/types";
-import ExpenseForm from "~/components/forms/ExpenseForm";
-import { useProfile } from "~/hooks/useProfiles";
-import { format } from "date-fns";
-import { useAccounts } from "~/hooks/useAccounts";
+import { CreditCard, Plus } from "lucide-solid";
+import { type Component, For, Show, createSignal } from "solid-js";
 import ExpenseCard from "~/components/ExpenseCard";
+import ExpenseForm from "~/components/forms/ExpenseForm";
+import { useAccounts } from "~/hooks/useAccounts";
+import { useExpenses } from "~/hooks/useExpenses";
+import { useProfile } from "~/hooks/useProfiles";
+import type { ExpenseType } from "~/types";
 
 export const ExpenseCategories = [
   { value: "shopping", label: "Shopping" },
@@ -23,9 +16,6 @@ export const { accounts } = useAccounts();
 const Expenses: Component = () => {
   const {
     expenses,
-    filter,
-    filterByDateRange,
-    filters,
     loading,
     create,
     update,

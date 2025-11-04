@@ -1,10 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
-import { For, Show, createMemo, type Component } from "solid-js";
-import {
-  profileSchema,
-  type AccountFormData,
-  type ProfileFormData,
-} from "~/lib/validations";
+import { Show, type Component } from "solid-js";
+import { profileSchema, type ProfileFormData } from "~/lib/validations";
 import type { ProfileType } from "~/types";
 
 interface ProfileFormProps {

@@ -1,14 +1,14 @@
+import { format } from "date-fns";
 import { User, UserCircleIcon } from "lucide-solid";
 import { createSignal, Show, type Component } from "solid-js";
 import ProfileForm from "~/components/forms/ProfileForm";
 import { useProfile } from "~/hooks/useProfiles";
 import type { ProfileType } from "~/types";
-import { format } from "date-fns";
 
 const Profile: Component = () => {
   const [isModifyingProfile, setIsModifyingProfile] = createSignal(false);
 
-  const { profile, loading, save, clear } = useProfile();
+  const { profile, loading, save } = useProfile();
 
   return (
     <div class="flex flex-col gap-6">
