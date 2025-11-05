@@ -4,6 +4,7 @@ import type { AccountType } from "~/types";
 export const accountService = {
   // Get all accounts
   getAll: async (): Promise<AccountType[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return await db.accounts.orderBy("createdAt").reverse().toArray();
   },
 

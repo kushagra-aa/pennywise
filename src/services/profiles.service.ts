@@ -4,6 +4,7 @@ import type { ProfileType } from "~/types";
 export const profileService = {
   // Get profile (only one exists)
   get: async (): Promise<ProfileType | null> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const profiles = await db.profile.toArray();
     return profiles[0] || null;
   },

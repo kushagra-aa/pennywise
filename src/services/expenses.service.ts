@@ -4,6 +4,7 @@ import type { ExpenseType } from "~/types";
 export const expenseService = {
   // Get all expenses
   getAll: async (): Promise<ExpenseType[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return await db.expenses.orderBy("date").reverse().toArray();
   },
 

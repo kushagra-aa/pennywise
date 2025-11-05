@@ -9,6 +9,7 @@ import { type Component, type JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-solid";
 import { cn } from "~/lib/utils";
+import Loader from "./Loader";
 
 // Toast variant type
 export type ToastVariant = "success" | "error" | "info" | "loading";
@@ -113,7 +114,7 @@ function promise<T, U = Error>(
     // Type guard to check which state we're in
     const getContent = () => {
       if (props.state === "pending") {
-        return options.loading || "Loading...";
+        return options.loading || <Loader />;
       }
       if (props.state === "fulfilled") {
         // TypeScript now knows props.data exists here

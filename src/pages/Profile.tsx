@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { User, UserCircleIcon } from "lucide-solid";
 import { createSignal, Show, type Component } from "solid-js";
 import ProfileForm from "~/components/forms/ProfileForm";
+import Loader from "~/components/ui/Loader";
 import { useProfile } from "~/hooks/useProfiles";
 import type { ProfileType } from "~/types";
 
@@ -25,8 +26,8 @@ const Profile: Component = () => {
 
       {/* Loading State */}
       <Show when={loading()}>
-        <div class="text-center py-8">
-          <p class="text-gray-500">Loading accounts...</p>
+        <div class="flex justify-center text-blue-500 items-center py-8">
+          <Loader size={42} />
         </div>
       </Show>
 

@@ -4,6 +4,7 @@ import { Plus, CreditCard, Trash2, Pencil, PiggyBank } from "lucide-solid";
 import type { AccountType } from "~/types";
 import AccountForm from "~/components/forms/AccountForm";
 import { useProfile } from "~/hooks/useProfiles";
+import Loader from "~/components/ui/Loader";
 
 export const AcountTypes = [
   { value: "credit_card", label: "Credit Card" },
@@ -59,8 +60,8 @@ const Accounts: Component = () => {
 
       {/* Loading State */}
       <Show when={loading()}>
-        <div class="text-center py-8">
-          <p class="text-gray-500">Loading accounts...</p>
+        <div class="flex justify-center text-blue-500 items-center py-8">
+          <Loader size={42} />
         </div>
       </Show>
 
