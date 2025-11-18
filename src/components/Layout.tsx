@@ -1,16 +1,6 @@
-import { Show, type Component, type JSXElement } from "solid-js";
 import { A } from "@solidjs/router";
-import {
-  Home,
-  CreditCard,
-  Receipt,
-  User,
-  LucideGitGraph,
-  ChartArea,
-} from "lucide-solid";
-import { useServiceWorker } from "~/hooks/useServiceWorker";
-import { useInstallPrompt } from "~/hooks/useInstallPrompt";
-import UIButton from "./ui/Button";
+import { ChartArea, CreditCard, Receipt, User } from "lucide-solid";
+import { type Component, type JSXElement } from "solid-js";
 
 const Layout: Component<{ children?: JSXElement }> = (props) => {
   return (
