@@ -2,6 +2,18 @@
 import { render } from "solid-js/web";
 import "./index.css";
 import App from "./App";
+import { registerSW } from "virtual:pwa-register";
+
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm("New version available! Reload?")) {
+      updateSW(true);
+    }
+  },
+  onOfflineReady() {
+    console.log("App ready to work offline");
+  },
+});
 
 const root = document.getElementById("root");
 

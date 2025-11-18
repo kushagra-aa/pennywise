@@ -1,13 +1,44 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PennyWise</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PennyWise</title>
+        <meta
+            name="description"
+            content="Offline-first personal expense tracker"
+        />
+
+        <!-- Theme + background color (for Android and Windows tiles) -->
+        <meta name="theme-color" content="#4f46e5" />
+        <meta name="background-color" content="#ffffff" />
+
+        <!-- Manifest -->
+        <link rel="manifest" href="/manifest.json" />
+
+        <!-- Favicon + icons -->
+        <link rel="icon" href="/icons/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="shortcut icon" href="/icons/favicon-96x96.png" />
+
+        <!-- iOS standalone mode -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="PennyWise" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        <!-- Optional: Splash screen background -->
+        <link rel="apple-touch-startup-image" href="/icons/splash.png" />
+
+        <meta property="og:image" content="/icons/pennywise.png" />
+        <meta property="og:title" content="PennyWise" />
+        <meta
+            property="og:description"
+            content="Offline-first personal expense tracker."
+        />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/index.tsx"></script>
+    </body>
 </html>
