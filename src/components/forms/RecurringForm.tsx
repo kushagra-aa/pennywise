@@ -5,8 +5,8 @@ import {
   recurringCreateSchema,
   type RecurringFormData,
 } from "~/lib/validations";
-import { ExpenseCategories } from "~/pages/Expenses";
 import { accounts, RecurringTypes } from "~/pages/Recurrings";
+import { ExpenseCategories } from "~/pages/Transactions";
 import type { AccountType, RecurringType } from "~/types";
 import UIButton from "../ui/Button";
 
@@ -329,8 +329,6 @@ const RecurringForm: Component<RecurringFormProps> = (props) => {
                 onInput={(e) => {
                   const dString = e.target.value;
                   const d = new Date(dString);
-                  console.log({ d, dString });
-                  console.log(d.toLocaleDateString());
                   field().handleChange(d);
                 }}
                 onBlur={() => field().handleBlur()}

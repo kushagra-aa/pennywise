@@ -1,30 +1,34 @@
 import { createForm } from "@tanstack/solid-form";
 import { format } from "date-fns";
-import { For, Show, type Component } from "solid-js";
-import { expenseSchema, type ExpenseFormData } from "~/lib/validations";
-import { ExpenseCategories, accounts } from "~/pages/Transactions";
-import type { AccountType, ExpenseType } from "~/types";
+import { createMemo, For, Show, type Component } from "solid-js";
+import { incomeSchema, type IncomeFormData } from "~/lib/validations";
+import { accounts, IncomeCategories } from "~/pages/Transactions";
+import type { AccountType, IncomeType } from "~/types";
 import UIButton from "../ui/Button";
 
-interface ExpenseFormProps {
-  expense?: ExpenseType;
-  onSubmit: (data: ExpenseFormData) => Promise<void>;
+interface IncomeFormProps {
+  income?: IncomeType;
+  onSubmit: (data: IncomeFormData) => Promise<void>;
   onCancel: () => void;
 }
 
-const ExpenseForm: Component<ExpenseFormProps> = (props) => {
+const IncomeForm: Component<IncomeFormProps> = (props) => {
   const form = createForm(() => ({
     defaultValues: {
-      accountId: props.expense?.accountId || "",
-      amount: props.expense?.amount || 0,
-      category: props.expense?.category || ExpenseCategories[0].value,
-      description: props.expense?.description || "",
-      date: props.expense?.date || new Date(),
-    } as ExpenseFormData,
+      accountId: props.income?.accountId || "",
+      amount: props.income?.amount || 0,
+      category: props.income?.category || IncomeCategories[0].value,
+      description: props.income?.description || "",
+      date: props.income?.date || new Date(),
+    } as IncomeFormData,
     onSubmit: async ({ value }) => {
       await props.onSubmit(value);
     },
   }));
+
+  const useableAccounts = createMemo(() =>
+    accounts()?.filter((a) => a.type === "bank_account")
+  );
 
   return (
     <form
@@ -38,7 +42,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
       <form.Field
         name="amount"
         validators={{
-          onChange: expenseSchema.shape.amount,
+          onChange: incomeSchema.shape.amount,
         }}
       >
         {(field) => (
@@ -65,7 +69,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
       <form.Field
         name="description"
         validators={{
-          onChange: expenseSchema.shape.description,
+          onChange: incomeSchema.shape.description,
         }}
       >
         {(field) => (
@@ -90,7 +94,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
       <form.Field
         name="category"
         validators={{
-          onChange: expenseSchema.shape.category,
+          onChange: incomeSchema.shape.category,
         }}
       >
         {(field) => (
@@ -101,8 +105,8 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
               onChange={(e) => field().handleChange(e.target.value)}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
-              <For each={ExpenseCategories}>
-                {(type: (typeof ExpenseCategories)[number]) => (
+              <For each={IncomeCategories}>
+                {(type: (typeof IncomeCategories)[number]) => (
                   <option value={type.value}>{type.label}</option>
                 )}
               </For>
@@ -119,7 +123,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
       <form.Field
         name="accountId"
         validators={{
-          onChange: expenseSchema.shape.accountId,
+          onChange: incomeSchema.shape.accountId,
         }}
       >
         {(field) => (
@@ -133,7 +137,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
               <option value="" disabled selected hidden>
                 Select Account
               </option>
-              <For each={accounts()}>
+              <For each={useableAccounts()}>
                 {(account: AccountType) => (
                   <option value={account.id}>
                     {account.name}-{account.type.replaceAll("_", " ")}
@@ -153,7 +157,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
       <form.Field
         name="date"
         validators={{
-          onChange: expenseSchema.shape.date,
+          onChange: incomeSchema.shape.date,
         }}
       >
         {(field) => (
@@ -195,7 +199,7 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
         >
           {form.state.isSubmitting
             ? "Saving..."
-            : props.expense
+            : props.income
             ? "Update"
             : "Create"}
         </UIButton>
@@ -204,4 +208,4 @@ const ExpenseForm: Component<ExpenseFormProps> = (props) => {
   );
 };
 
-export default ExpenseForm;
+export default IncomeForm;

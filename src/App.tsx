@@ -3,8 +3,8 @@ import Layout from "~/components/Layout";
 import Toast from "~/components/ui/Toast";
 import Accounts from "~/pages/Accounts";
 import Dashboard from "~/pages/Dashboard";
-import Expenses from "~/pages/Expenses";
 import Profile from "~/pages/Profile";
+import Transactions from "~/pages/Transactions";
 import LandingPage from "./pages/LandingPage";
 import Recurrings from "./pages/Recurrings";
 
@@ -15,7 +15,7 @@ function App() {
       <Router root={Layout}>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/accounts" component={Accounts} />
-        <Route path="/expenses" component={Expenses} />
+        <Route path="/transactions" component={Transactions} />
         <Route path="/profile" component={Profile} />
         <Route path="/recurrings" component={Recurrings} />
         <Route path="*404" component={LandingPage} />

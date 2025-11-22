@@ -28,8 +28,8 @@ export interface ExpenseType {
   category: string;
   description?: string;
   date: Date;
-  isEMI?: BooleanType; //Boolean
   recurringId?: string; // points to Recurring template
+  isEMI?: BooleanType; //Boolean
   transferId?: string;
   createdAt: Date;
 }

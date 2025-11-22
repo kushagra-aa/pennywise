@@ -1,5 +1,10 @@
 import { A } from "@solidjs/router";
-import { ChartArea, CreditCard, Receipt, Repeat } from "lucide-solid";
+import {
+  ChartArea,
+  CreditCard,
+  ReceiptIndianRupee,
+  Repeat,
+} from "lucide-solid";
 import { type Component, type JSXElement } from "solid-js";
 
 const Layout: Component<{ children?: JSXElement }> = (props) => {
@@ -38,13 +43,13 @@ const Layout: Component<{ children?: JSXElement }> = (props) => {
               <span>Accounts</span>
             </A>
             <A
-              href="/expenses"
+              href="/transactions"
               class="flex flex-col items-center gap-1 text-xs"
               activeClass="text-foreground font-semibold"
               inactiveClass="text-foreground/60"
             >
-              <Receipt size={24} />
-              <span>Expenses</span>
+              <ReceiptIndianRupee size={24} />
+              <span>Transactions</span>
             </A>
             <A
               href="/recurrings"
