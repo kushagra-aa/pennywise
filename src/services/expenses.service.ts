@@ -7,6 +7,14 @@ export const expenseService = {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return await db.expenses.orderBy("date").reverse().toArray();
   },
+  getAllWithoutTransfer: async (): Promise<ExpenseType[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.expenses
+      .orderBy("date")
+      .and((expense) => !expense.transferID)
+      .reverse()
+      .toArray();
+  },
 
   // Get expenses by account
   getByAccount: async (accountId: string): Promise<ExpenseType[]> => {
@@ -62,6 +70,10 @@ export const expenseService = {
           expense.accountId === accountId && expense.category === category
       )
       .toArray();
+  },
+
+  getByID: async (id: string): Promise<ExpenseType | undefined> => {
+    return await db.expenses.get({ id });
   },
 
   // Create expense

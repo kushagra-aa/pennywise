@@ -28,11 +28,19 @@ export const incomeSchema = z.object({
   description: z.string().min(1, "Description is required"),
   date: z.date(),
 });
+export const transferSchema = z.object({
+  fromAccountID: z.string().min(1, "From Account is required"),
+  toAccountID: z.string().min(1, "To Account is required"),
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
+  description: z.string().min(1, "Description is required"),
+  date: z.date(),
+});
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
 export type AccountFormData = z.infer<typeof accountSchema>;
 export type ExpenseFormData = z.infer<typeof expenseSchema>;
 export type IncomeFormData = z.infer<typeof incomeSchema>;
+export type TransferFormData = z.infer<typeof transferSchema>;
 
 export const recurringCreateSchema = z
   .object({

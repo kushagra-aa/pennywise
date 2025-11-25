@@ -38,7 +38,7 @@ const fetchExpenses = async (filters: {
     if (checkString(accountID)) {
       return await expenseService.getByAccount(accountID);
     }
-    return await expenseService.getAll();
+    return await expenseService.getAllWithoutTransfer();
   } catch (err) {
     toast.error("Failed to load expenses");
     console.error(err);

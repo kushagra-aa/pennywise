@@ -30,7 +30,7 @@ export interface ExpenseType {
   date: Date;
   recurringId?: string; // points to Recurring template
   isEMI?: BooleanType; //Boolean
-  transferId?: string;
+  transferID?: string;
   createdAt: Date;
 }
 
@@ -42,6 +42,7 @@ export interface IncomeType {
   description?: string;
   date: Date;
   recurringId?: string;
+  transferID?: string;
   createdAt: Date;
 }
 
@@ -67,8 +68,8 @@ export interface RecurringType {
 
 export interface TransferType {
   id: string;
-  fromAccountId: string;
-  toAccountId: string;
+  fromAccountID: string;
+  toAccountID: string;
   amount: number;
   date: Date;
   description?: string;

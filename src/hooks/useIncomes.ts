@@ -38,7 +38,7 @@ const fetchIncomes = async (filters: {
     if (checkString(accountID)) {
       return await incomeService.getByAccount(accountID);
     }
-    return await incomeService.getAll();
+    return await incomeService.getAllWithoutTransfer();
   } catch (err) {
     toast.error("Failed to load incomes");
     console.error(err);

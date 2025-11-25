@@ -4,6 +4,7 @@ import EmptyState from "~/components/EmptyState";
 import ExpenseCard from "~/components/ExpenseCard";
 import IncomeCard from "~/components/IncomeCard";
 import TransactionForm from "~/components/TransactionForm";
+import TransferCard from "~/components/TransferCard";
 import UIButton from "~/components/ui/Button";
 import Loader from "~/components/ui/Loader";
 import UITabs from "~/components/ui/Tabs";
@@ -14,7 +15,9 @@ import {
   useTransactions,
   type TransactionEntity,
   type TransactionKind,
+  type TransactionType,
 } from "~/hooks/useTransactions";
+import type { TransferFullType } from "~/hooks/useTransfers";
 import type { ExpenseType, IncomeType } from "~/types";
 
 export const ExpenseCategories = [
@@ -48,7 +51,7 @@ const Transactions: Component = () => {
 
   const [isAddingTransaction, setIsAddingTransaction] = createSignal(false);
   const [editingTransaction, setEditingTransaction] =
-    createSignal<TransactionEntity | null>(null);
+    createSignal<TransactionType | null>(null);
 
   return (
     <div class="space-y-4">
@@ -88,7 +91,7 @@ const Transactions: Component = () => {
       </Show>
 
       {/* Transactions List */}
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
         <For each={transactions()}>
           {(transaction) => (
             <>
@@ -110,6 +113,16 @@ const Transactions: Component = () => {
                     deleteTransaction(id, transaction.transactionKind)
                   }
                   setEditingIncome={setEditingTransaction}
+                />
+              </Show>
+              <Show when={transaction.transactionKind === "transfer"}>
+                <TransferCard
+                  income={transaction as TransferFullType}
+                  currency={currency}
+                  handleDelete={(id: string) =>
+                    deleteTransaction(id, transaction.transactionKind)
+                  }
+                  setEditingTransfer={setEditingTransaction}
                 />
               </Show>
             </>

@@ -7,6 +7,14 @@ export const incomeService = {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return await db.incomes.orderBy("date").reverse().toArray();
   },
+  getAllWithoutTransfer: async (): Promise<IncomeType[]> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.incomes
+      .orderBy("date")
+      .and((income) => !!income.transferID)
+      .reverse()
+      .toArray();
+  },
 
   // Get incomes by account
   getByAccount: async (accountId: string): Promise<IncomeType[]> => {
@@ -59,6 +67,10 @@ export const incomeService = {
           income.accountId === accountId && income.category === category
       )
       .toArray();
+  },
+
+  getByID: async (id: string): Promise<IncomeType | undefined> => {
+    return await db.incomes.get({ id });
   },
 
   // Create income

@@ -2,9 +2,10 @@ import { createMemo, createResource, createSignal } from "solid-js";
 import type { ExpenseType, IncomeType } from "~/types";
 import { useExpenses } from "./useExpenses";
 import { useIncomes } from "./useIncomes";
+import { useTransfers, type TransferFullType } from "./useTransfers";
 
-export type TransactionKind = "income" | "expense";
-export type TransactionEntity = ExpenseType | IncomeType;
+export type TransactionKind = "income" | "expense" | "transfer";
+export type TransactionEntity = ExpenseType | IncomeType | TransferFullType;
 
 export type TransactionType = TransactionEntity & {
   transactionKind: TransactionKind;
@@ -17,6 +18,7 @@ export const TRANSACTION_TABS: {
   { label: "All", value: "all" },
   { label: "Expenses", value: "expense" },
   { label: "Incomes", value: "income" },
+  { label: "Transfers", value: "transfer" },
 ];
 
 export const useTransactions = () => {
@@ -42,6 +44,16 @@ export const useTransactions = () => {
     update: updateIncome,
     delete: deleteIncome,
   } = useIncomes();
+  const {
+    transfers,
+    loading: transfersLoading,
+    refresh: transfersRefresh,
+    filterByDateRange: transferFilterByDateRange,
+    filters: transferFilters,
+    create: createTransfer,
+    update: updateTransfer,
+    delete: deleteTransfer,
+  } = useTransfers();
 
   const [currentTab, setCurrentTab] = createSignal<
     (typeof TRANSACTION_TABS)[number]["value"]
@@ -60,18 +72,26 @@ export const useTransactions = () => {
       transactionKind: "income" as const,
     }))
   );
+  const transactionTransfers = createMemo(() =>
+    (transfers() || []).map((e) => ({
+      ...e,
+      transactionKind: "transfer" as const,
+    }))
+  );
 
   const fetchTransactions = async () => {
     // Merge & sort by date (latest first)
-    const combined = [...transactionExpenses(), ...transactionIncomes()].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const combined = [
+      ...transactionExpenses(),
+      ...transactionIncomes(),
+      ...transactionTransfers(),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     return combined;
   };
 
   const [transactions, { refetch }] = createResource(
-    () => [expenses(), incomes()],
+    () => [expenses(), incomes(), transfers()],
     fetchTransactions
   );
 
@@ -82,12 +102,14 @@ export const useTransactions = () => {
   const filterByDateRange = (start: string, end: string) => {
     expenseFilterByDateRange(start, end);
     incomeFilterByDateRange(start, end);
+    transferFilterByDateRange(start, end);
   };
 
   const refresh = () => {
     refetch();
     expensesRefresh();
     incomesRefresh();
+    transfersRefresh();
   };
   const changeTab = (v: (typeof TRANSACTION_TABS)[number]["value"]) => {
     setCurrentTab(v);
@@ -99,6 +121,7 @@ export const useTransactions = () => {
   ) => {
     if (type === "expense") await createExpense(data as ExpenseType);
     if (type === "income") await createIncome(data as IncomeType);
+    if (type === "transfer") await createTransfer(data as TransferFullType);
   };
   const update = async (
     id: string,
@@ -107,11 +130,13 @@ export const useTransactions = () => {
   ) => {
     if (type === "expense") await updateExpense(id, data as ExpenseType);
     if (type === "income") await updateIncome(id, data as IncomeType);
+    if (type === "transfer") await updateTransfer(id, data as TransferFullType);
   };
   const deleteTransaction = async (id: string, type: TransactionKind) => {
     if (confirm(`Are you sure you want to delete "${id}"?`)) {
       if (type === "expense") await deleteExpense(id);
       if (type === "income") await deleteIncome(id);
+      if (type === "transfer") await deleteTransfer(id);
     }
   };
 
@@ -121,14 +146,22 @@ export const useTransactions = () => {
         ? transactionExpenses()
         : currentTab() === "income"
         ? transactionIncomes()
+        : currentTab() === "transfer"
+        ? transactionTransfers()
         : transactions(),
     expenses,
     incomes,
-    loading: () => !!(expensesLoading() && incomesLoading()),
+    transfers,
+    loading: () =>
+      !!(expensesLoading() && incomesLoading() && transfersLoading()),
     error: () => transactions.error,
     refresh,
     filter,
-    filters: { expense: expenseFilters, income: incomeFilters },
+    filters: {
+      expense: expenseFilters,
+      income: incomeFilters,
+      transfer: transferFilters,
+    },
     filterByDateRange,
     create,
     update,
