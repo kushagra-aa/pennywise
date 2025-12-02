@@ -1,9 +1,4 @@
-import {
-  CreditCard,
-  FilterIcon,
-  SettingsIcon,
-  SortAscIcon,
-} from "lucide-solid";
+import { CreditCard, FilterIcon, SettingsIcon } from "lucide-solid";
 import { For, Show, createMemo, createSignal, type Component } from "solid-js";
 import EmptyState from "~/components/EmptyState";
 import ExpenseCard from "~/components/ExpenseCard";
@@ -11,6 +6,7 @@ import AddButton from "~/components/FloatingButtons/AddButton";
 import MenuButton from "~/components/FloatingButtons/MenuButton";
 import IncomeCard from "~/components/IncomeCard";
 import Modal from "~/components/Modal";
+import OptionsTabs from "~/components/OptionTabs";
 import TransactionForm from "~/components/TransactionForm";
 import TransferCard from "~/components/TransferCard";
 import UIButton from "~/components/ui/Button";
@@ -19,8 +15,10 @@ import UITabs from "~/components/ui/Tabs";
 import { useAccounts } from "~/hooks/useAccounts";
 import { useProfile } from "~/hooks/useProfiles";
 import {
+  RECURRING_FILTER_OPTIONS,
   TRANSACTION_TABS,
   useTransactions,
+  type RecurringFilterEnum,
   type TransactionEntity,
   type TransactionKind,
   type TransactionType,
@@ -51,6 +49,8 @@ const Transactions: Component = () => {
     changeTab,
     currentTab,
     delete: deleteTransaction,
+    filters,
+    filter,
   } = useTransactions();
   const { profile } = useProfile();
 
@@ -58,6 +58,7 @@ const Transactions: Component = () => {
   const currency = userProfile?.currency || "₹";
 
   const [isAddingTransaction, setIsAddingTransaction] = createSignal(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = createSignal(false);
   const [editingTransaction, setEditingTransaction] =
     createSignal<TransactionType | null>(null);
 
@@ -65,10 +66,21 @@ const Transactions: Component = () => {
     () => !!(isAddingTransaction() || editingTransaction())
   );
 
+  const filterRecurring = (val: string) => {
+    filter(val as RecurringFilterEnum);
+  };
   const handleModalClose = () => {
     setIsAddingTransaction(false);
     setEditingTransaction(null);
+    setIsFilterModalOpen(false);
   };
+  const handleFilterClick = () => {
+    setIsFilterModalOpen(true);
+  };
+
+  const currentRecurringFilter = createMemo(
+    () => filters.expense().recurringFilter
+  );
 
   return (
     <div class="space-y-4">
@@ -76,8 +88,8 @@ const Transactions: Component = () => {
         position="bottom-right"
         items={[
           { label: "Settings", icon: SettingsIcon, onClick() {} },
-          { label: "Sort", icon: SortAscIcon, onClick() {} },
-          { label: "Filter", icon: FilterIcon, onClick() {} },
+          // { label: "Sort", icon: SortAscIcon, onClick() {} },
+          { label: "Filter", icon: FilterIcon, onClick: handleFilterClick },
         ]}
       />
       <AddButton handleClick={() => setIsAddingTransaction(true)} />
@@ -172,6 +184,18 @@ const Transactions: Component = () => {
             setEditingTransaction(null);
           }}
           handleCancel={handleModalClose}
+        />
+      </Modal>
+      <Modal
+        isOpen={isFilterModalOpen}
+        handleClose={handleModalClose}
+        title={"Filter Transactions"}
+      >
+        <OptionsTabs
+          title="Filter by Recurring"
+          value={currentRecurringFilter}
+          handleChange={filterRecurring}
+          options={RECURRING_FILTER_OPTIONS}
         />
       </Modal>
     </div>

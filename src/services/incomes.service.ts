@@ -11,7 +11,23 @@ export const incomeService = {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return await db.incomes
       .orderBy("date")
-      .and((income) => !!income.transferID)
+      .and((income) => !income.transferID)
+      .reverse()
+      .toArray();
+  },
+  getAllWithoutRecurring: async (): Promise<IncomeType[]> => {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.incomes
+      .orderBy("date")
+      .and((income) => !income.recurringId)
+      .reverse()
+      .toArray();
+  },
+  getAllOnlyRecurring: async (): Promise<IncomeType[]> => {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.incomes
+      .orderBy("date")
+      .and((income) => !!income.recurringId)
       .reverse()
       .toArray();
   },

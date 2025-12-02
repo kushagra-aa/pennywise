@@ -36,6 +36,8 @@ const ExpenseCard = ({
             <h3 class="font-semibold text-lg">
               -{currency}
               {expense.amount}
+              {!!expense.recurringId ? "RE" : ""}
+              {!!expense.transferID ? "TR" : ""}
             </h3>
             <p class="text-sm text-gray-400 capitalize">
               {format(expense.date!, "PP")}

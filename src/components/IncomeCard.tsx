@@ -36,6 +36,8 @@ const IncomeCard = ({
             <h3 class="font-semibold text-lg">
               +{currency}
               {income.amount}
+              {!!income.recurringId ? "RE" : ""}
+              {!!income.transferID ? "TR" : ""}
             </h3>
             <p class="text-sm text-gray-400 capitalize">
               {format(income.date!, "PP")}

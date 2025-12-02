@@ -3,14 +3,25 @@ import { toast } from "~/components/ui/Toast";
 import { checkString } from "~/lib/utils";
 import { expenseService } from "~/services/expenses.service";
 import type { ExpenseType } from "~/types";
+import {
+  RECURRING_FILTER_OPTIONS,
+  type RecurringFilterEnum,
+} from "./useTransactions";
 
 const fetchExpenses = async (filters: {
+  recurringFilter: RecurringFilterEnum;
   category: string;
   accountID: string;
   dateRange: { start: string; end: string };
 }) => {
-  const { category, accountID, dateRange } = filters;
+  const { category, accountID, dateRange, recurringFilter } = filters;
   try {
+    if (recurringFilter !== "all") {
+      if (recurringFilter === "no_recurring")
+        return await expenseService.getAllWithoutRecurring();
+      if (recurringFilter === "recurring")
+        return await expenseService.getAllOnlyRecurring();
+    }
     if (
       checkString(category) &&
       checkString(accountID) &&
@@ -48,6 +59,7 @@ const fetchExpenses = async (filters: {
 
 export const useExpenses = () => {
   const [filters, setFilters] = createSignal({
+    recurringFilter: RECURRING_FILTER_OPTIONS[0].value,
     category: "",
     accountID: "",
     dateRange: { start: "", end: "" },
@@ -55,8 +67,13 @@ export const useExpenses = () => {
 
   const [expenses, { refetch }] = createResource(filters, fetchExpenses);
 
-  const filter = (cat?: string, acc?: string) => {
-    setFilters((p) => ({ ...p, category: cat ?? "", accountID: acc ?? "" }));
+  const filter = (rec: RecurringFilterEnum, cat?: string, acc?: string) => {
+    setFilters((p) => ({
+      ...p,
+      recurringFilter: rec,
+      category: cat ?? "",
+      accountID: acc ?? "",
+    }));
   };
 
   const filterByDateRange = (start: string, end: string) => {

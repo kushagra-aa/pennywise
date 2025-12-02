@@ -15,6 +15,22 @@ export const expenseService = {
       .reverse()
       .toArray();
   },
+  getAllWithoutRecurring: async (): Promise<ExpenseType[]> => {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.expenses
+      .orderBy("date")
+      .and((income) => !income.recurringId)
+      .reverse()
+      .toArray();
+  },
+  getAllOnlyRecurring: async (): Promise<ExpenseType[]> => {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    return await db.expenses
+      .orderBy("date")
+      .and((income) => !!income.recurringId)
+      .reverse()
+      .toArray();
+  },
 
   // Get expenses by account
   getByAccount: async (accountId: string): Promise<ExpenseType[]> => {

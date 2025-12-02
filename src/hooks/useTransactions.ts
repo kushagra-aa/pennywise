@@ -6,11 +6,12 @@ import { useTransfers, type TransferFullType } from "./useTransfers";
 
 export type TransactionKind = "income" | "expense" | "transfer";
 export type TransactionEntity = ExpenseType | IncomeType | TransferFullType;
+export type RecurringFilterEnum = "all" | "recurring" | "no_recurring";
 
 export type TransactionType = TransactionEntity & {
   transactionKind: TransactionKind;
 };
-// TODO: Labels
+
 export const TRANSACTION_TABS: {
   label: string;
   value: TransactionKind | "all";
@@ -19,6 +20,14 @@ export const TRANSACTION_TABS: {
   { label: "Expenses", value: "expense" },
   { label: "Incomes", value: "income" },
   { label: "Transfers", value: "transfer" },
+];
+export const RECURRING_FILTER_OPTIONS: {
+  label: string;
+  value: RecurringFilterEnum;
+}[] = [
+  { label: "All", value: "all" },
+  { label: "Only Recurring", value: "recurring" },
+  { label: "No Recurring", value: "no_recurring" },
 ];
 
 export const useTransactions = () => {
@@ -95,9 +104,9 @@ export const useTransactions = () => {
     fetchTransactions
   );
 
-  const filter = (cat?: string, acc?: string) => {
-    incomeFilter(cat, acc);
-    expenseFilter(cat, acc);
+  const filter = (rec: RecurringFilterEnum, cat?: string, acc?: string) => {
+    incomeFilter(rec, cat, acc);
+    expenseFilter(rec, cat, acc);
   };
   const filterByDateRange = (start: string, end: string) => {
     expenseFilterByDateRange(start, end);
@@ -140,15 +149,29 @@ export const useTransactions = () => {
     }
   };
 
+  const allTransactions = createMemo(() => {
+    if (incomeFilters().recurringFilter === "no_recurring") {
+      if (currentTab() === "all")
+        return [...transactionExpenses(), ...transactionIncomes()];
+      if (currentTab() === "expense") return transactionExpenses();
+      if (currentTab() === "income") return transactionIncomes();
+      if (currentTab() === "transfer") return [];
+    }
+    if (incomeFilters().recurringFilter === "recurring") {
+      if (currentTab() === "all")
+        return [...transactionExpenses(), ...transactionIncomes()];
+      if (currentTab() === "expense") return transactionExpenses();
+      if (currentTab() === "income") return transactionIncomes();
+      if (currentTab() === "transfer") return [];
+    }
+    if (currentTab() === "expense") return transactionExpenses();
+    if (currentTab() === "income") return transactionIncomes();
+    if (currentTab() === "transfer") return transactionTransfers();
+    return transactions();
+  });
+
   return {
-    transactions: () =>
-      currentTab() === "expense"
-        ? transactionExpenses()
-        : currentTab() === "income"
-        ? transactionIncomes()
-        : currentTab() === "transfer"
-        ? transactionTransfers()
-        : transactions(),
+    transactions: allTransactions,
     expenses,
     incomes,
     transfers,
