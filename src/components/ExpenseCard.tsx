@@ -1,3 +1,4 @@
+import { Badge } from "@kobalte/core/badge";
 import { format } from "date-fns";
 import { IndianRupee, Pencil, Trash2 } from "lucide-solid";
 import { createMemo, createSignal, Show } from "solid-js";
@@ -21,11 +22,19 @@ const ExpenseCard = ({
     accounts()?.find((acc) => acc.id === expense.accountId)
   );
 
+  const expenseType = createMemo(() => {
+    if (!!expense.recurringId)
+      return { label: "recurring", value: "recurring_expense" };
+    if (!!expense.transferID)
+      return { label: "transfer", value: "transfer_expense" };
+    return { label: "expense", value: "expense" };
+  });
+
   return (
     <div class="bg-slate-900 text-gray-300 border rounded-lg px-3 py-2 shadow-sm hover:shadow-md transition-shadow border-red-700">
       {/* Expense Header */}
       <div
-        class="flex items-start justify-between mb-3"
+        class="flex flex-col gap-2 items-start justify-between py-1"
         onClick={() => setIsExpanded((e) => !e)}
       >
         <div class="flex items-center gap-3 w-full">
@@ -36,8 +45,6 @@ const ExpenseCard = ({
             <h3 class="font-semibold text-lg">
               -{currency}
               {expense.amount}
-              {!!expense.recurringId ? "RE" : ""}
-              {!!expense.transferID ? "TR" : ""}
             </h3>
             <p class="text-sm text-gray-400 capitalize">
               {format(expense.date!, "PP")}
@@ -48,10 +55,25 @@ const ExpenseCard = ({
             <p class="text-sm text-gray-400 capitalize">{account()?.name}</p>
           </div>
         </div>
+        <Show when={!isExpanded()}>
+          <div class="w-full flex items-center justify-between gap-2">
+            <p class="text-xs text-slate-400 truncate">{expense.description}</p>
+            <Badge
+              class="badge inline-block px-2 py-0.5 bg-purple-900 text-slate-300 text-[10px] capitalize rounded-xl"
+              textValue={expenseType().value}
+            >
+              {expenseType().label}
+            </Badge>
+          </div>
+        </Show>
       </div>
       <Show when={isExpanded()}>
         {/* Expense Details */}
-        <div class="space-y-2 mb-4">
+        <div class="space-y-2 mb-4 mt-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Expense Type:</span>
+            <span class="font-medium capitalize">{expenseType()?.label}</span>
+          </div>
           <div class="flex justify-between text-sm">
             <span class="text-gray-500">Account Type:</span>
             <span class="font-medium capitalize">
