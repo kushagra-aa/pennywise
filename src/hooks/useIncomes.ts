@@ -16,7 +16,6 @@ const fetchIncomes = async (filters: {
 }) => {
   const { category, accountID, dateRange, recurringFilter } = filters;
   try {
-    console.log("recurringFilter :>> ", recurringFilter);
     if (recurringFilter !== "all") {
       if (recurringFilter === "no_recurring")
         return await incomeService.getAllWithoutRecurring();

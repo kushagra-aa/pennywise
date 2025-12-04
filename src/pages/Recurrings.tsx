@@ -1,3 +1,4 @@
+import { useNavigate } from "@solidjs/router";
 import { CreditCard, SettingsIcon } from "lucide-solid";
 import { type Component, For, Show, createMemo, createSignal } from "solid-js";
 import EmptyState from "~/components/EmptyState";
@@ -31,6 +32,7 @@ const Recurrings: Component = () => {
     toggle,
   } = useRecurrings();
   const { profile } = useProfile();
+  const navigate = useNavigate();
 
   const userProfile = profile();
   const currency = userProfile?.currency || "₹";
@@ -60,12 +62,17 @@ const Recurrings: Component = () => {
     setIsAddingRecurring(false);
     setEditingRecurring(null);
   };
+  const onSettingsClick = () => {
+    navigate("/settings");
+  };
 
   return (
     <div class="space-y-4">
       <MenuButton
         position="bottom-right"
-        items={[{ label: "Settings", icon: SettingsIcon, onClick() {} }]}
+        items={[
+          { label: "Settings", icon: SettingsIcon, onClick: onSettingsClick },
+        ]}
       />
       <AddButton handleClick={() => setIsAddingRecurring(true)} />
       {/* Header */}

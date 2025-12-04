@@ -10,7 +10,7 @@
   --label-padding-x: 1rem;
   --label-padding-y: 0.563rem;
   --item-separator-translate: calc(-1 * var(--border-width) / 2);
-  --border-radius: var(--radius-xs);
+  --border-radius: var(--radius-xl);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -37,7 +37,8 @@
 .segmented-control__wrapper {
   all: unset;
   background-color: var(--root-background-color);
-  border-bottom: 1px solid var(--border-active-color);
+  border: 1px solid var(--border-active-color);
+  border-radius: var(--border-radius);
   box-shadow: inset 0px 0px 0px var(--border-width) var(--border-color);
   margin: 0;
   padding: 0;

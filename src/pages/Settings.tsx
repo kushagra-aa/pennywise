@@ -77,7 +77,7 @@ const Profile: Component = () => {
             <ProfileForm
               profile={profile() || undefined}
               onSubmit={async (
-                data: Omit<ProfileType, "id" | "createdAt" | "updatedAt">,
+                data: Omit<ProfileType, "id" | "createdAt" | "updatedAt">
               ) => {
                 await save(data);
 

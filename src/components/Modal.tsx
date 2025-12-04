@@ -25,7 +25,9 @@ const Modal: Component<ModalPropsType> = ({
           onClick={(e) => e.stopPropagation()}
           class="bg-gray-900 text-gray-200 rounded-lg p-6 max-w-md w-full max-h-[80vh] flex flex-col"
         >
-          <h3 class="text-xl font-semibold mb-4">{title}</h3>
+          <h3 class="text-xl font-semibold mb-4 w-full border-b border-slate-800 pb-3">
+            {title}
+          </h3>
           {children}
         </div>
       </div>

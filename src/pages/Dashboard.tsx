@@ -1,3 +1,4 @@
+import { useNavigate } from "@solidjs/router";
 import { SettingsIcon } from "lucide-solid";
 import {
   createMemo,
@@ -32,6 +33,7 @@ const Dashboard: Component = () => {
   const { expenses, loading: expensesLoading } = useExpenses();
   const { accounts, loading: accountsLoading } = useAccounts();
   const { profile, loading: profileLoading } = useProfile();
+  const navigate = useNavigate();
 
   const userProfile = profile();
   const currency = userProfile?.currency || "₹";
@@ -48,12 +50,17 @@ const Dashboard: Component = () => {
         .reduce((sum, exp) => sum + exp.amount, 0),
     }))
   );
+  const onSettingsClick = () => {
+    navigate("/settings");
+  };
 
   return (
     <div class="flex flex-col gap-6 text-xl">
       <MenuButton
         position="bottom-right"
-        items={[{ label: "Settings", icon: SettingsIcon, onClick() {} }]}
+        items={[
+          { label: "Settings", icon: SettingsIcon, onClick: onSettingsClick },
+        ]}
       />
       <p class="flex gap-4 items-end">
         Total Expenses:{" "}

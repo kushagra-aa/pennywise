@@ -1,9 +1,5 @@
-import {
-  CreditCard,
-  FilterIcon,
-  SettingsIcon,
-  SortAscIcon,
-} from "lucide-solid";
+import { useNavigate } from "@solidjs/router";
+import { CreditCard, SettingsIcon } from "lucide-solid";
 import { type Component, For, Show, createMemo, createSignal } from "solid-js";
 import AccountCard from "~/components/AccountCard";
 import EmptyState from "~/components/EmptyState";
@@ -32,6 +28,7 @@ const Accounts: Component = () => {
     delete: deleteAccount,
   } = useAccounts();
   const { profile } = useProfile();
+  const navigate = useNavigate();
 
   const userProfile = profile();
   const currency = userProfile?.currency || "₹";
@@ -55,15 +52,18 @@ const Accounts: Component = () => {
       await deleteAccount(id);
     }
   };
+  const onSettingsClick = () => {
+    navigate("/settings");
+  };
 
   return (
     <div class="space-y-4">
       <MenuButton
         position="bottom-right"
         items={[
-          { label: "Settings", icon: SettingsIcon, onClick() {} },
-          { label: "Sort", icon: SortAscIcon, onClick() {} },
-          { label: "Filter", icon: FilterIcon, onClick() {} },
+          { label: "Settings", icon: SettingsIcon, onClick: onSettingsClick },
+          // { label: "Sort", icon: SortAscIcon, onClick() {} },
+          // { label: "Filter", icon: FilterIcon, onClick() {} },
         ]}
       />
       <AddButton handleClick={() => setIsAddingAccount(true)} />
