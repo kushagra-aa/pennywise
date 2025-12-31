@@ -32,7 +32,7 @@ const LandingPage: Component = () => {
 
   onMount(() => {
     if (isPWAInstalled()) {
-      navigate("/transactions", { replace: true });
+      navigate("/transactions");
     }
   });
 
